@@ -1,0 +1,47 @@
+{
+  "version": "1.0.0",
+  "last_updated": "2025-01-16",
+  "core_principles": {
+    "transparency": {
+      "description": "All agent actions must be logged and visible to users",
+      "requirements": [
+        "Log every agent action to both stdout and logs/",
+        "Maintain real-time visibility in Live Agent Console",
+        "Never log secrets or sensitive information"
+      ]
+    },
+    "safety": {
+      "description": "All changes must pass automated tests before deployment",
+      "requirements": [
+        "All code changes must pass automated tests before merge & deploy",
+        "Implement rollback mechanism for failed deployments",
+        "Respect resource constraints and budget limits"
+      ]
+    },
+    "modularity": {
+      "description": "System must be designed for extensibility and maintainability",
+      "requirements": [
+        "Maintain clear separation between frontend, backend, and agents",
+        "Design modular backend ready for future research areas",
+        "Ensure architectural checkpoints are maintained"
+      ]
+    },
+    "community_governance": {
+      "description": "Major changes must be subject to community input and voting",
+      "requirements": [
+        "Subject major changes to community vote",
+        "Provide mechanisms for community input collection",
+        "Maintain democratic decision-making processes"
+      ]
+    },
+    "open_source": {
+      "description": "Use only permissive open-source licenses",
+      "requirements": [
+        "Use only MIT, Apache-2.0, or BSD-3 licensed dependencies",
+        "Maintain open-source licensing for all project components",
+        "Ensure code is publicly accessible and transparent"
+      ]
+    }
+  }
+}
+
