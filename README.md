@@ -81,6 +81,6 @@ This project uses GitHub Actions for continuous integration and deployment. Work
 
 ## Licensing
 
-This project is licensed under the MIT License. See the `LICENSE` file for details. (Note: `LICENSE` file will be added in a future phase.)
+This project is licensed under the MIT License. See the `LICENSE` file for details.
 
 
