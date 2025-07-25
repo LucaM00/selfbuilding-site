@@ -1,39 +1,58 @@
-from flask import Blueprint, jsonify, request
-from src.models.user import User, db
+from fastapi import APIRouter, HTTPException
+from pydantic import BaseModel
+from typing import List
 
-user_bp = Blueprint('user', __name__)
+from src.models.user import (
+    User,
+    create_user,
+    delete_user,
+    get_user,
+    get_users,
+    update_user,
+)
 
-@user_bp.route('/users', methods=['GET'])
-def get_users():
-    users = User.query.all()
-    return jsonify([user.to_dict() for user in users])
 
-@user_bp.route('/users', methods=['POST'])
-def create_user():
-    
-    data = request.json
-    user = User(username=data['username'], email=data['email'])
-    db.session.add(user)
-    db.session.commit()
-    return jsonify(user.to_dict()), 201
+class UserCreate(BaseModel):
+    username: str
+    email: str
 
-@user_bp.route('/users/<int:user_id>', methods=['GET'])
-def get_user(user_id):
-    user = User.query.get_or_404(user_id)
-    return jsonify(user.to_dict())
 
-@user_bp.route('/users/<int:user_id>', methods=['PUT'])
-def update_user(user_id):
-    user = User.query.get_or_404(user_id)
-    data = request.json
-    user.username = data.get('username', user.username)
-    user.email = data.get('email', user.email)
-    db.session.commit()
-    return jsonify(user.to_dict())
+class UserUpdate(BaseModel):
+    username: str | None = None
+    email: str | None = None
 
-@user_bp.route('/users/<int:user_id>', methods=['DELETE'])
-def delete_user(user_id):
-    user = User.query.get_or_404(user_id)
-    db.session.delete(user)
-    db.session.commit()
-    return '', 204
+
+router = APIRouter()
+
+
+@router.get("/users", response_model=List[User])
+async def list_users() -> List[User]:
+    return get_users()
+
+
+@router.post("/users", response_model=User, status_code=201)
+async def create_user_endpoint(payload: UserCreate) -> User:
+    return create_user(payload.username, payload.email)
+
+
+@router.get("/users/{user_id}", response_model=User)
+async def get_user_endpoint(user_id: str) -> User:
+    user = get_user(user_id)
+    if user is None:
+        raise HTTPException(status_code=404, detail="User not found")
+    return user
+
+
+@router.put("/users/{user_id}", response_model=User)
+async def update_user_endpoint(user_id: str, payload: UserUpdate) -> User:
+    user = update_user(user_id, payload.username, payload.email)
+    if user is None:
+        raise HTTPException(status_code=404, detail="User not found")
+    return user
+
+
+@router.delete("/users/{user_id}", status_code=204)
+async def delete_user_endpoint(user_id: str) -> None:
+    if not delete_user(user_id):
+        raise HTTPException(status_code=404, detail="User not found")
+    return None
