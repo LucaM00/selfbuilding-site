@@ -12,6 +12,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 
 from src.logging_config import agent_logger
 from src.websocket_manager import messenger
+from src.routes.user import router as user_router
 
 app = FastAPI(title="Self-Building Site API", version="1.0.0")
 
@@ -28,6 +29,9 @@ app.add_middleware(
 static_folder_path = os.path.join(os.path.dirname(__file__), 'static')
 if os.path.exists(static_folder_path):
     app.mount("/static", StaticFiles(directory=static_folder_path), name="static")
+
+# API routes
+app.include_router(user_router, prefix="/api")
 
 @app.on_event("startup")
 async def startup_event():
